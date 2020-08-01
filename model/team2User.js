@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 
 const teamTwoUser = mongoose.Schema ({
   name: {type: String},
-  email: {type: String},
-  username: {type: String},
+  email: {type: String, required: true, unique: true},
+  username: {type: String, required: true, unique: true},
   password: {type: String},
   secretquestion: {type: String},
   secretanswer: {type: String},

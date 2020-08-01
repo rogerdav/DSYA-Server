@@ -8,16 +8,28 @@ const basicAuthMiddleware = require('../lib/basic-auth-middleware');
 
 module.exports = router => {
 
-  router.post('/team1/createuser/', bodyParser, (req, res) => {
-    let user = new User(req.body);
-    return user.save()
-      .then(user => {
-        console.log('user created', user);
-        res.status(201).json(user);
-      })
-      .catch(err => {
-        ErrorHandler(err, res);
-      });
+  router.post('/team1/createuser/', bodyParser, async (req, res) => {
+    let found = await User.find({ 
+      $or: [
+        { username: req.body.username },
+        { email: req.body.email }
+      ]
+    })
+    console.log('found', found);
+    if(found.length === 0) {
+      let user = new User(req.body);
+      return user.save()
+        .then(user => {
+          console.log('user created', user);
+          res.status(201).json(user);
+        })
+        .catch(err => {
+          ErrorHandler(err, res);
+        });
+
+    } else {
+      res.status(400).json('Username or email already exists');
+    }
   });
   router.get('/team1/checkusername/:username', bodyParser, (req, res) => {
     console.log('request params', req.params.username);
@@ -34,7 +46,7 @@ module.exports = router => {
       })
       .catch(err => console.log(err));
   });
-  
+
   router.get('/team1/login/', bodyParser, basicAuthMiddleware, (req, res) => {
     
     console.log('request user info', req.userModelHeader);
