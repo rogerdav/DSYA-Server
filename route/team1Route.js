@@ -3,6 +3,7 @@
 const bodyParser = require('body-parser').json();
 const ErrorHandler = require('../lib/error-handler');
 const User = require('../model/team1User');
+const basicAuthMiddleware = require('../lib/basic-auth-middleware');
 
 
 module.exports = router => {
@@ -17,6 +18,42 @@ module.exports = router => {
       .catch(err => {
         ErrorHandler(err, res);
       });
+  });
+  router.get('/team1/checkusername/:username', bodyParser, (req, res) => {
+    console.log('request params', req.params.username);
+    User.find({username: req.params.username})
+      .then(result => {
+        console.log('result from search', result);
+        if (result.length === 0) {
+          res.status(400).json('not found');
+        } 
+        if (result.length > 0) {
+
+          res.sendStatus(200);
+        }
+      })
+      .catch(err => console.log(err));
+  });
+  
+  router.get('/team1/login/', bodyParser, basicAuthMiddleware, (req, res) => {
+    
+    console.log('request user info', req.userModelHeader);
+    User.find({username: req.userModelHeader.username})
+      .then(result => {
+        console.log('result', result);
+        if (result.length === 0) {
+          res.status(400).json('User name not found');
+        }
+        if (result) {
+          if(result[0].password === req.userModelHeader.password) {
+            res.status(201).json('username and password ok');
+          } else {
+            res.status(201).json('Password incorrect');
+          }
+          
+        }
+      })
+      .catch(err => console.log(err));
   });
 
   
