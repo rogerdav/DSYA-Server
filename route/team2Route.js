@@ -4,6 +4,7 @@ const bodyParser = require('body-parser').json();
 const ErrorHandler = require('../lib/error-handler');
 const User = require('../model/team2User');
 const basicAuthMiddleware = require('../lib/basic-auth-middleware');
+const errorHandler = require('../lib/error-handler');
 
 
 module.exports = router => {
@@ -37,14 +38,14 @@ module.exports = router => {
       .then(result => {
         console.log('result from search', result);
         if (result.length === 0) {
-          res.status(400).json('not found');
+          res.status(200).json('not found');
         } 
         if (result.length > 0) {
 
-          res.sendStatus(200);
+          res.status(200).json('user exists');
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => errorHandler(err, res));
   });
 
   router.get('/team2/login/', bodyParser, basicAuthMiddleware, (req, res) => {

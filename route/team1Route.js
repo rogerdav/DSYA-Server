@@ -34,17 +34,17 @@ module.exports = router => {
   router.get('/team1/checkusername/:username', bodyParser, (req, res) => {
     console.log('request params', req.params.username);
     User.find({username: req.params.username})
-      .then(result => {
-        console.log('result from search', result);
-        if (result.length === 0) {
-          res.status(400).json('not found');
-        } 
-        if (result.length > 0) {
+    .then(result => {
+      console.log('result from search', result);
+      if (result.length === 0) {
+        res.status(200).json('not found');
+      } 
+      if (result.length > 0) {
 
-          res.sendStatus(200);
-        }
-      })
-      .catch(err => console.log(err));
+        res.status(200).json('user exists');
+      }
+    })
+    .catch(err => errorHandler(err, res));
   });
 
   router.get('/team1/login/', bodyParser, basicAuthMiddleware, (req, res) => {
