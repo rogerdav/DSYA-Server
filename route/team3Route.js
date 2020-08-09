@@ -9,12 +9,24 @@ const basicAuthMiddleware = require('../lib/basic-auth-middleware');
 module.exports = router => {
 
   router.post('/team3/createuser/', bodyParser, async (req, res) => {
-    let found = await User.find({ 
-      $or: [
-        { username: req.body.username },
-        { email: req.body.email }
-      ]
-    })
+    // let foundUsername = await User.find({ 
+    //   $or: [
+    //     { username: req.body.username },
+    //     { email: req.body.email }
+    //   ]
+    // })
+    let foundUsername = await User.find({username: req.body.username})
+    let foundEmail = await User.find({email: req.body.email})
+    if(foundEmail.length > 0 && foundUsername.length > 0) {
+      res.status(400).json('Email and username already in use');
+    }
+    if(foundEmail.length > 0) {
+      res.status(400).json('Email already in use');
+    }
+    if(foundUsername.length > 0) {
+      res.status(400).json('Username already in use');
+    }
+
     console.log('found', found);
     if(found.length === 0) {
       let user = new User(req.body);
@@ -27,9 +39,8 @@ module.exports = router => {
           ErrorHandler(err, res);
         });
 
-    } else {
-      res.status(400).json('Username or email already exists');
-    }
+    } 
+    
   });
   router.get('/team3/checkusername/:username', bodyParser, (req, res) => {
     console.log('request params', req.params.username);

@@ -47,7 +47,7 @@ module.exports = router => {
     .catch(err => errorHandler(err, res));
   });
 
-  router.get('/team1/login/', bodyParser, basicAuthMiddleware, (req, res) => {
+  router.post('/team1/login/', bodyParser, basicAuthMiddleware, (req, res) => {
     
     console.log('request user info', req.userModelHeader);
     User.find({username: req.userModelHeader.username})
