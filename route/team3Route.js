@@ -27,8 +27,8 @@ module.exports = router => {
       res.status(400).json('Username already in use');
     }
 
-    console.log('found', found);
-    if(found.length === 0) {
+    // console.log('found', found);
+    if(foundUsername.length === 0 && foundEmail.length === 0) {
       let user = new User(req.body);
       return user.save()
         .then(user => {
