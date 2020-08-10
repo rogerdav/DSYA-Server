@@ -59,6 +59,22 @@ module.exports = router => {
     .catch(err => errorHandler(err, res));
   });
 
+  router.get('/team3/checkemail/:email', bodyParser, (req, res) => {
+    console.log('request params', req.params.username);
+    User.find({email: req.params.email})
+    .then(result => {
+      console.log('result from search', result);
+      if (result.length === 0) {
+        res.status(200).json('not found');
+      } 
+      if (result.length > 0) {
+
+        res.status(200).json('email already in use');
+      }
+    })
+    .catch(err => errorHandler(err, res));
+  });
+
   router.get('/team3/login/', bodyParser, basicAuthMiddleware, (req, res) => {
     
     console.log('request user info', req.userModelHeader);
