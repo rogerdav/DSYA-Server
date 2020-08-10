@@ -92,7 +92,7 @@ module.exports = router => {
     User.findOne({username: req.body.username})
       .then(user => {
         if(user.secretanswer === req.body.answer)  {
-          res.status(200).json('Correct Answer');
+          res.status(200).json(user._id);
         } else {
           res.status(200).json('Incorrect Answer');
         }
@@ -100,6 +100,17 @@ module.exports = router => {
       .catch(err => errorHandler(err, res));
   });
 
+  router.put('/team3/changepassword/', bodyParser, (req, res) => {
+    User.findById(req.body.id)
+      .then(user => {
+       user.password = req.body.password;
+       return user.save();
+      })
+      .then(userSaved => {
+        res.sendStatus(204)
+      })
+      .catch(err => errorHandler(err, res));
+  });
   };
   
   
