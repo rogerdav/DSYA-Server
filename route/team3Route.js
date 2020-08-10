@@ -113,19 +113,21 @@ module.exports = router => {
           res.status(200).json('Incorrect Answer');
         }
       })
-      .catch(err => errorHandler(err, res));
+      .catch(err => ErrorHandler(err, res));
   });
 
   router.put('/team3/changepassword/', bodyParser, (req, res) => {
-    User.findOne({_id: req.body.id})
+    console.log('id', req.body.id)
+    User.findById(req.body.id)
       .then(user => {
+        console.log('user found', user)
        user.password = req.body.password;
        return user.save();
       })
       .then(userSaved => {
-        res.sendStatus(204)
+        res.status(201).json(userSaved)
       })
-      .catch(err => errorHandler(err, res));
+      .catch(err => ErrorHandler(err, res));
   });
   };
   
