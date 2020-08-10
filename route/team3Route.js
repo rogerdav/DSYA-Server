@@ -42,6 +42,7 @@ module.exports = router => {
     } 
     
   });
+
   router.get('/team3/checkusername/:username', bodyParser, (req, res) => {
     console.log('request params', req.params.username);
     User.find({username: req.params.username})
@@ -78,13 +79,27 @@ module.exports = router => {
       })
       .catch(err => console.log(err));
   });
+  router.get('/team3/secretquestion/:username', bodyParser, (req, res) => {
+    User.find({username: req.params.username})
+      .then(result => {
+       let user = result[0];
+       res.status(201).json(user.secretquestion)
+      })
+      .catch(err => console.log(err));
+  });
 
-  
-  
-  
-  
-  
+  router.put('/team3/checkanswer/', bodyParser, (req, res) => {
+    User.findOne({username: req.body.username})
+      .then(user => {
+        if(user.secretanswer === req.body.answer)  {
+          res.status(200).json('Correct Answer');
+        } else {
+          res.status(200).json('Incorrect Answer');
+        }
+      })
+      .catch(err => errorHandler(err, res));
+  });
 
+  };
   
-
-};
+  
