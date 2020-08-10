@@ -117,7 +117,7 @@ module.exports = router => {
   });
 
   router.put('/team3/changepassword/', bodyParser, (req, res) => {
-    User.findById(req.body.id)
+    User.findOne({_id: req.body.id})
       .then(user => {
        user.password = req.body.password;
        return user.save();
