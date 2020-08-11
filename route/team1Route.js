@@ -89,7 +89,19 @@ module.exports = router => {
       })
       .catch(err => errorHandler(err, res));
   });
-
+  router.put('/team1/changepassword/', bodyParser, (req, res) => {
+    console.log('id', req.body.username)
+    User.findOne({username: req.body.username})
+      .then(user => {
+        console.log('user found', user)
+       user.password = req.body.password;
+       return user.save();
+      })
+      .then(userSaved => {
+        res.sendStatus(204);
+      })
+      .catch(err => ErrorHandler(err, res));
+  });
   
   
   
