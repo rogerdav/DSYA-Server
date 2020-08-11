@@ -5,6 +5,7 @@ const ErrorHandler = require('../lib/error-handler');
 const User = require('../model/team2User');
 const basicAuthMiddleware = require('../lib/basic-auth-middleware');
 const errorHandler = require('../lib/error-handler');
+const sendEmail = require('../lib/sendResetEmail');
 
 
 module.exports = router => {
@@ -69,7 +70,25 @@ module.exports = router => {
       .catch(err => console.log(err));
   });
 
-  
+  router.put('/team2/resetemail/', bodyParser, (req, res) => {
+    
+    
+    User.find({username: req.body.username})
+      .then(async result => {
+        if(result.length > 0){
+          let emailResponse = await sendEmail(result[0].email, req.body.link)
+          if (emailResponse) {
+            res.sendStatus(204);
+          } else {
+            throw new Error('no file')
+          }
+          
+        } else {
+          throw new Error('no file')
+        }
+      })
+      .catch(err => errorHandler(err, res));
+  });
   
   
   
