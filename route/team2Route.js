@@ -60,7 +60,8 @@ module.exports = router => {
         }
         if (result) {
           if(result[0].password === req.userModelHeader.password) {
-            res.status(201).json('username and password ok');
+            result[0].passsword = '';
+            res.status(201).json(result[0]);
           } else {
             res.status(201).json('Password incorrect');
           }
